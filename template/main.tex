@@ -1,0 +1,110 @@
+\documentclass[UTF8,twocolumn]{ctexart}
+
+\usepackage[a4paper,left=8mm,right=8mm,top=10mm,bottom=10mm,columnsep=6mm]{geometry}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{tocloft}
+
+\definecolor{codebg}{RGB}{248,248,248}
+\definecolor{codecomment}{RGB}{0,96,64}
+\definecolor{codekeyword}{RGB}{0,64,128}
+\definecolor{codestring}{RGB}{144,64,0}
+\definecolor{codenumber}{RGB}{120,120,120}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{ICPC Code Library}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0.2pt}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=black,
+  pdfauthor={ICPC Code Library},
+  pdftitle={ICPC Code Library}
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1pt}
+\setlength{\columnseprule}{0.2pt}
+\linespread{0.94}
+\AtBeginDocument{\small}
+
+\titleformat{\section}
+  {\large\bfseries}
+  {\thesection}
+  {0.4em}
+  {}
+\titleformat{\subsection}
+  {\normalsize\bfseries}
+  {\thesubsection}
+  {0.4em}
+  {}
+\titlespacing*{\section}{0pt}{0.7em}{0.25em}
+\titlespacing*{\subsection}{0pt}{0.45em}{0.15em}
+\setlength{\cftbeforesecskip}{1pt}
+\setlength{\cftbeforesubsecskip}{0pt}
+
+\makeatletter
+\renewcommand{\maketitle}{%
+  \twocolumn[{%
+    \vspace*{-1.7em}
+    \begin{center}
+      {\Large\bfseries \@title\par}
+    \end{center}
+    \vspace{-1.1em}
+  }]%
+}
+\makeatother
+
+\lstdefinestyle{icpc}{
+  language=C++,
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle=\bfseries\color{codekeyword},
+  commentstyle=\itshape\color{codecomment},
+  stringstyle=\color{codestring},
+  numberstyle=\tiny\color{codenumber},
+  numbers=left,
+  stepnumber=1,
+  numbersep=3pt,
+  backgroundcolor=\color{codebg},
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=4,
+  breaklines=true,
+  breakatwhitespace=false,
+  columns=fullflexible,
+  keepspaces=true,
+  xleftmargin=1.2em,
+  frame=single,
+  framerule=0.2pt,
+  framesep=2pt,
+  rulecolor=\color{black!25},
+  captionpos=t,
+  aboveskip=0.35em,
+  belowskip=0.55em
+}
+
+\newcommand{\codefile}[3]{%
+  \subsection{#1}
+  \lstinputlisting[style=icpc,title={#2}]{#3}
+}
+
+\begin{document}
+
+\title{ICPC Code Library}
+\author{}
+\date{}
+\maketitle
+\thispagestyle{fancy}
+
+\tableofcontents
+\vspace{0.6em}
+
+\input{template/generated/code-listings.tex}
+
+\end{document}
