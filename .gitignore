@@ -2,4 +2,5 @@ template/build/
 template/tmp/
 .vscode/
 .agents/
+.claude/
 *.exe
