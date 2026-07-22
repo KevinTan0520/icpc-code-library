@@ -1,12 +1,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-const int MAXN = 1e5 + 10;
-
 struct Edge {int u, v; };
-vector<Edge> e[MAXN];
 
-vector<int> topological_sort(int n) {
+vector<int> topological_sort(const vector<vector<Edge>> &e, int n) {
     queue<int> q;
     vector<int> deg(n + 1, 0), ans;
     for (int i = 1; i <= n; i++) {

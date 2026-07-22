@@ -1,6 +1,5 @@
 #include <bits/stdc++.h>
 using namespace std;
-const int MAXN = 1e5 + 10;
 
 struct DisjointSet {
     int size;
@@ -24,13 +23,12 @@ struct DisjointSet {
 };
 
 struct Edge {int u, v, w; };
-vector<Edge> e[MAXN], tot;
 
 bool cmp(Edge a, Edge b) {
     return a.w < b.w;
 }
 
-int kruskal(int n, int m) {
+int kruskal(vector<Edge> &tot, int n, int m) {
     int sum = 0, cnt = 0;
     DisjointSet ds;
     ds.init(n);
