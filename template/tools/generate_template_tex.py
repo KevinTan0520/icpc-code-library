@@ -82,7 +82,9 @@ def write_generated(root: Path, output: Path, sources: list[Path]) -> None:
         "",
     ]
 
-    for section in sorted(grouped, key=str.lower):
+    for section in sorted(
+        grouped, key=lambda name: (name.casefold() == "other", name.casefold())
+    ):
         lines.append(rf"\section{{{tex_escape(section)}}}")
         for source in grouped[section]:
             rel = source.relative_to(root).as_posix()
