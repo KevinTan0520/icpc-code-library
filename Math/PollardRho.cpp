@@ -1,6 +1,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+bool miller_rabin(long long x) {return 0; } // find in other file
+
 long long f(long long t, long long c, long long x) {
     return ((__int128) t * t + c) % x;
 }
