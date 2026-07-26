@@ -4,3 +4,4 @@ template/tmp/
 .agents/
 .claude/
 *.exe
+plan.md
