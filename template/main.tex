@@ -91,9 +91,9 @@
   belowskip=0.55em
 }
 
-\newcommand{\codefile}[3]{%
-  \subsection{#1}
-  \lstinputlisting[style=icpc,title={#2}]{#3}
+\newcommand{\codefile}[4][C++]{%
+  \subsection{#2}
+  \lstinputlisting[style=icpc,language=#1,title={#3}]{#4}
 }
 
 \begin{document}

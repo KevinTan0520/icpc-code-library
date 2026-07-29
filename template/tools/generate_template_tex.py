@@ -19,6 +19,11 @@ SOURCE_EXTENSIONS = {
     ".py",
     ".rs",
     ".go",
+    ".sh",
+}
+
+LISTING_LANGUAGES = {
+    ".sh": "bash",
 }
 
 IGNORED_DIRS = {
@@ -89,7 +94,11 @@ def write_generated(root: Path, output: Path, sources: list[Path]) -> None:
         for source in grouped[section]:
             rel = source.relative_to(root).as_posix()
             title = source.stem
-            lines.append(rf"\codefile{{{tex_escape(title)}}}{{{tex_escape(rel)}}}{{{rel}}}")
+            language = LISTING_LANGUAGES.get(source.suffix.lower())
+            command = rf"\codefile[{language}]" if language else r"\codefile"
+            lines.append(
+                rf"{command}{{{tex_escape(title)}}}{{{tex_escape(rel)}}}{{{rel}}}"
+            )
         lines.append("")
 
     output.parent.mkdir(parents=True, exist_ok=True)
