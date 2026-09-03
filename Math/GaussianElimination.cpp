@@ -69,6 +69,33 @@ LinearSystemStatus gaussian_elimination(vector<vector<double>> a, vector<double>
         : LinearSystemStatus::UniqueSolution;
 }
 
+void solve() {
+    int n;
+    cin >> n;
+    vector<vector<double>> a(n); // 注意a数组大小必须跟方程组增广矩阵大小严格一致
+    vector<double> ans(n);
+    for (int i = 0; i < n; i++) {
+        a[i].assign(n + 1, 0);
+        for (int j = 0; j < n + 1; j++) {
+            cin >> a[i][j];
+        }
+    }
+    LinearSystemStatus sta = gaussian_elimination(a, ans);
+    if (sta == LinearSystemStatus::NoSolution) {
+        cout << "-1\n";
+    }
+    else if (sta == LinearSystemStatus::InfiniteSolutions) {
+        cout << "0\n";
+    }
+    else {
+        for (int i = 0; i < n; i++) {
+            printf("x%d=%.3lf\n", i, ans[i]);
+        }
+    }
+    return;
+}
+
 int main() {
+    solve();
     return 0;
 }
