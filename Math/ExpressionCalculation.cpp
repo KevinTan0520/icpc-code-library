@@ -2,10 +2,9 @@
 using namespace std;
 
 double calc_expression(string &s) {
-    string expr = s;          // 复制一份，避免修改原串
+    string expr = s; 
     size_t pos = 0;
 
-    // 递归下降解析器，全部封装在函数内部（使用 lambda）
     function<void()> skipWhitespace = [&]() {
         while (pos < expr.size() && isspace(expr[pos])) ++pos;
     };
