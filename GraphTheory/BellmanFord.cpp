@@ -29,6 +29,34 @@ bool bellman_ford(const vector<vector<Edge>> &e, vector<int> &dis, int n, int st
     return 0;
 }
 
+bool spfa(const vector<vector<Edge>> &e, vector<int> &dis, int n, int st) {
+    vector<bool> in_queue(n + 1, false);
+    vector<int> edge_count(n + 1, 0);
+    queue<int> q;
+    dis.assign(n + 1, INT_MAX);
+    dis[st] = 0;
+    q.push(st);
+    in_queue[st] = true;
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+        in_queue[u] = false;
+        for (const Edge &edge : e[u]) {
+            int v = edge.v;
+            if (dis[u] != INT_MAX && dis[u] + edge.w < dis[v]) {
+                dis[v] = dis[u] + edge.w;
+                edge_count[v] = edge_count[u] + 1;
+                if (edge_count[v] >= n) return 1; // find negative cycle
+                if (!in_queue[v]) {
+                    q.push(v);
+                    in_queue[v] = true;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
 int main() {
     return 0;
 }
