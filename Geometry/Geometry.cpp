@@ -1,6 +1,9 @@
 #include <algorithm>
 #include <cassert>
+#include <chrono>
 #include <cmath>
+#include <random>
+#include <vector>
 using namespace std;
 
 const double pi = acos(-1.0);
@@ -65,6 +68,14 @@ double Angle(Vector a, Vector b) {
     return acos(clamp_unit(Dot(a, b) / Len(a) / Len(b)));
 }
 
+// the angle of A rotate counter-clockwise to B
+double Angle_ccw(Vector a, Vector b) {
+    double angle = atan2(Cross(a, b), Dot(a, b));
+    if (angle < 0) angle += 2 * pi;
+    if (angle >= 2 * pi) angle = 0; 
+    return angle;
+}
+
 // Twice the signed area of triangle ABC.
 double Area2(Point a, Point b, Point c) {
     return Cross(b - a, c - a);
@@ -90,6 +101,11 @@ bool Parallel(Vector a, Vector b) {
 Vector Rotate(Vector a, double rad) {
     return Vector(a.x * cos(rad) - a.y * sin(rad),
                   a.x * sin(rad) + a.y * cos(rad));
+}
+
+// Rotates p counterclockwise about center by rad radians.
+Point Rotate(Point center, Point p, double rad) {
+    return center + Rotate(p - center, rad);
 }
 
 struct Line {
@@ -220,8 +236,11 @@ int Point_in_polygon(Point pt, const Point *p, int n) {
 // Signed area; it is positive when vertices are counterclockwise.
 double Polygon_area(const Point *p, int n) {
     double area2 = 0;
-    for (int i = 0; i < n; ++i) {
-        area2 += Cross(p[i], p[(i + 1) % n]);
+    // for (int i = 0; i < n; ++i) {
+    //     area2 += Cross(p[i], p[(i + 1) % n]);
+    // }
+    for (int i = 1; i + 1 < n; i++) {
+        area2 += Cross(p[i] - p[0], p[i + 1] - p[0]);
     }
     return area2 / 2;
 }
@@ -321,6 +340,51 @@ int Line_cross_circle(Line v, Circle c, Point &pa, Point &pb) {
     pa = q + n * k;
     pb = q - n * k;
     return 2;
+}
+
+// Randomized incremental algorithm, expected O(n) time.
+// Takes a copy to preserve the input order. Empty input returns Circle((0, 0), 0).
+Circle Min_cover_circle(vector<Point> points) {
+    if (points.empty()) return Circle();
+    static mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+    shuffle(points.begin(), points.end(), rng);
+
+    auto diameter_circle = [](Point a, Point b) {
+        Point center = a + (b - a) / 2;
+        return Circle(center, Distance(a, b) / 2);
+    };
+    auto three_point_circle = [&](Point a, Point b, Point c) {
+        Vector u = b - a, v = c - a;
+        double d = 2 * Cross(u, v);
+        if (d == 0) {
+            // Collinear points: use the farthest pair as a diameter.
+            Circle ans = diameter_circle(a, b);
+            Circle ac = diameter_circle(a, c), bc = diameter_circle(b, c);
+            if (ac.r > ans.r) ans = ac;
+            if (bc.r > ans.r) ans = bc;
+            return ans;
+        }
+        double u2 = Len2(u), v2 = Len2(v);
+        Point center = a + Point((u2 * v.y - v2 * u.y) / d,
+                                 (u.x * v2 - v.x * u2) / d);
+        return Circle(center, Distance(center, a));
+    };
+
+    Circle ans(points[0], 0);
+    int n = static_cast<int>(points.size());
+    for (int i = 1; i < n; ++i) {
+        if (Point_circle_relation(points[i], ans) != 2) continue;
+        ans = Circle(points[i], 0);
+        for (int j = 0; j < i; ++j) {
+            if (Point_circle_relation(points[j], ans) != 2) continue;
+            ans = diameter_circle(points[i], points[j]);
+            for (int k = 0; k < j; ++k) {
+                if (Point_circle_relation(points[k], ans) != 2) continue;
+                ans = three_point_circle(points[i], points[j], points[k]);
+            }
+        }
+    }
+    return ans;
 }
 
 // -------------------- 3D geometry --------------------
